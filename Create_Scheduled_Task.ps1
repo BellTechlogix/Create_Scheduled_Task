@@ -32,7 +32,7 @@ Function Get-DateTime([Parameter(Mandatory)][ValidateSet('Date','Time')][string[
 	$datePicker.Location = "140, 7"
 	$datePicker.Width = "150"
 	$datePicker.Format = [windows.forms.datetimepickerFormat]::custom
-	$datePicker.CustomFormat = "dd/MM/yyyy"
+	$datePicker.CustomFormat = "MM/dd/yyyy"
 	$mainForm.Controls.Add($datePicker)
 
 	# OD Button
@@ -92,5 +92,36 @@ Function Get-DateTime([Parameter(Mandatory)][ValidateSet('Date','Time')][string[
 Function New-Scheduledtask($Name,[Parameter()][ValidateSet('Hourly','Daily','Weekly','Monthly','AtStartup','AtLogon')][string[]]$Frequency,
 [Parameter()][ValidateSet('CMD','Powershell','Program')][string[]]$Type)
 {
-	$Time = New-ScheduledTaskTrigger -At ""
+	If($Frequency -ne 'AtStartup' -or $Frequency -ne 'AtLogon')
+	{
+		#initiates Get-DateTime function to grab date and time and store for use in triggers
+		$time = Get-DateTime -type Time
+		$date = Get-DateTime -type Date
+		
+		If($Frequency -eq 'Daily')
+		{
+			$trigger = New-ScheduledTaskTrigger -At "$date $time" -Daily
+		}
+		If($Frequency -eq 'Weekly')
+		{
+			$day = (Get-Date $date).DayOfWeek
+			$trigger = New-ScheduledTaskTrigger -At "$date $time" -Weekly -WeeksInterval 1 -DaysOfWeek $day
+		}
+		If($Frequency -eq 'Monthly')
+		{
+			$day = (Get-Date $date).DayOfWeek
+			$trigger = New-ScheduledTaskTrigger -At "$date $time" -Weekly -WeeksInterval 4 -DaysOfWeek $day
+		}
+	}
+
+
+	If($Frequency -eq 'AtStartup')
+	{
+		$trigger = New-ScheduledTaskTrigger -AtStartup
+	}
+
+		If($Frequency -eq 'AtLogon')
+	{
+		$trigger = New-ScheduledTaskTrigger -AtLogOn
+	}
 }
