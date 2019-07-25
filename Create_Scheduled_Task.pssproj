@@ -25,8 +25,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup />
   <ItemGroup>
+    <Content Include="Create_Scheduled_Task.bat" />
+    <Content Include="Create_Scheduled_Task.zip" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Create_Scheduled_Task-Function.ps1" />
     <Compile Include="Create_Scheduled_Task.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
